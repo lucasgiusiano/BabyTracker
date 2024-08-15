@@ -2,9 +2,13 @@ import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { departamentsList } from "../features/departamentsSlice";
 import { citiesList } from "../features/citiesSlice";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { loguedUser } from "../features/userSlice";
 
 const Signin = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const departaments = useSelector((state) => state.departaments.departaments);
   const cities = useSelector((state) => state.cities.cities);
@@ -36,7 +40,6 @@ const Signin = () => {
   }, []);
 
   const chargeCities = () => {
-    console.log(city.current.value);
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
@@ -78,14 +81,19 @@ const Signin = () => {
       raw.usuario != "" &&
       raw.password != "" &&
       raw.idDepartamento != -1 &&
-      idCiudad != -1
+      raw.idCiudad != -1
     ) {
       fetch("https://babytracker.develotion.com//usuarios.php", requestOptions)
         .then((response) => response.json())
         .then((result) => {
-          localStorage.setItem("ApiKey", result.apiKey);
-          localStorage.setItem("UserId", result.id);
-          navigate("/dashboard");
+          if (result.codigo == 200) {
+            localStorage.setItem("ApiKey", result.apiKey);
+            localStorage.setItem("UserId", result.id);
+            dispatch(loguedUser(result.id))
+            navigate("/dashboard");
+          } else {
+            toast.error("The user or password does not exist");
+          }
         })
         .catch((error) => console.log("error", error));
     } else {

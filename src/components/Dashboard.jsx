@@ -14,7 +14,7 @@ import {
 const Dashboard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const events = useSelector(state => state.events.events);
+  const events = useSelector((state) => state.events.events);
 
   useEffect(() => {
     if (localStorage.getItem("UserId") === null) {
@@ -33,23 +33,23 @@ const Dashboard = () => {
           dispatch(categoriesList(data.categorias));
         });
 
-        fetch(
-          `https://babytracker.develotion.com/eventos.php?idUsuario=${localStorage.getItem(
-            "UserId"
-          )}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              apikey: localStorage.getItem("ApiKey"),
-              idUser: parseInt(localStorage.getItem("UserId")),
-            },
-          }
-        )
-          .then((r) => r.json())
-          .then((data) => {
-            dispatch(eventsList(data.eventos));
-          });
+      fetch(
+        `https://babytracker.develotion.com/eventos.php?idUsuario=${localStorage.getItem(
+          "UserId"
+        )}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: localStorage.getItem("ApiKey"),
+            idUser: parseInt(localStorage.getItem("UserId")),
+          },
+        }
+      )
+        .then((r) => r.json())
+        .then((data) => {
+          dispatch(eventsList(data.eventos));
+        });
     }
   }, []);
 
@@ -69,29 +69,35 @@ const Dashboard = () => {
     )
       .then((r) => r.json())
       .then((data) => {
-        let now = new Date();
-        dispatch(
-          lastBottleConsumed(
-            data.eventos
-              .filter((e) => e.idCategoria == 35)
-              .reduce((closest, current) => {
-                const currentDiff = Math.abs(new Date(current.fecha) - now);
-                const closestDiff = Math.abs(new Date(closest.fecha) - now);
-                return currentDiff < closestDiff ? current : closest;
-              }, data.eventos[0]).fecha
-          )
-        );
-        dispatch(
-          lastDiaperChanged(
-            data.eventos
-              .filter((e) => e.idCategoria == 33)
-              .reduce((closest, current) => {
-                const currentDiff = Math.abs(new Date(current.fecha) - now);
-                const closestDiff = Math.abs(new Date(closest.fecha) - now);
-                return currentDiff < closestDiff ? current : closest;
-              }, data.eventos[0]).fecha
-          )
-        );
+        if(data.eventos.length != 0){
+          let now = new Date();
+          dispatch(
+            lastBottleConsumed(
+              data.eventos
+                .filter((e) => e.idCategoria == 35)
+                .reduce((closest, current) => {
+                  const currentDiff = Math.abs(new Date(current.fecha) - now);
+                  const closestDiff = Math.abs(new Date(closest.fecha) - now);
+                  return currentDiff < closestDiff ? current : closest;
+                }, data.eventos[0]).fecha
+            )
+          );
+          dispatch(
+            lastDiaperChanged(
+              data.eventos
+                .filter((e) => e.idCategoria == 33)
+                .reduce((closest, current) => {
+                  const currentDiff = Math.abs(new Date(current.fecha) - now);
+                  const closestDiff = Math.abs(new Date(closest.fecha) - now);
+                  return currentDiff < closestDiff ? current : closest;
+                }, data.eventos[0]).fecha
+            )
+          );
+        }else{
+          dispatch(lastBottleConsumed(new Date().toISOString()));
+          dispatch(lastDiaperChanged(new Date().toISOString()));
+        }
+
       });
   }, [events]);
 
@@ -100,7 +106,7 @@ const Dashboard = () => {
       <div className="mx-auto py-4 d-flex container row justify-content-md-between ">
         <Events />
         <Reports />
-        <Graphics/>
+        <Graphics />
       </div>
     </div>
   );

@@ -1,12 +1,21 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { loguedUser } from "../features/userSlice";
 
 const Login = () => {
   const user = useRef(null);
   const pass = useRef(null);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (localStorage.getItem("ApiKey") != null) {
+      navigate("/dashboard");
+    }
+  }, []);
 
   const log_in = () => {
     var myHeaders = new Headers();
@@ -30,6 +39,7 @@ const Login = () => {
         if (result.codigo == 200) {
           localStorage.setItem("ApiKey", result.apiKey);
           localStorage.setItem("UserId", result.id);
+          dispatch(loguedUser(result.id));
           navigate("/dashboard");
           toast.success("Welcome, " + raw.usuario);
         } else {

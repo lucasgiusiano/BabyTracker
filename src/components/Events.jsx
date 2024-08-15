@@ -1,7 +1,7 @@
 import Event from "./Event";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { eventsList, addEventToList } from "../features/eventsSlice";
+import { addEventToList } from "../features/eventsSlice";
 import { toast } from "react-toastify";
 
 const Events = () => {
@@ -55,7 +55,7 @@ const Events = () => {
         })
         .catch((error) => console.log("error", error));
     } else {
-      toast.error("You must complete all fields")
+      toast.error("You must complete all fields");
     }
   };
 

@@ -4,10 +4,10 @@ import Report from "./Report";
 const Reports = () => {
   const now = new Date();
   const consumedBottles = useSelector(
-    (state) => state.events.events.filter((e) => e.idCategoria === 35 && new Date(e.fecha).getDate() == now.getDate() && new Date(e.fecha).getMonth() == now.getMonth() && new Date(e.fecha).getFullYear() == now.getFullYear()).length
+    (state) => state.events.events?.filter((e) => e.idCategoria === 35 && new Date(e.fecha).getDate() == now.getDate() && new Date(e.fecha).getMonth() == now.getMonth() && new Date(e.fecha).getFullYear() == now.getFullYear()).length
   );
   const changedDiapers = useSelector(
-    (state) => state.events.events.filter((e) => e.idCategoria === 33 && new Date(e.fecha).getDate() == now.getDate() && new Date(e.fecha).getMonth() == now.getMonth() && new Date(e.fecha).getFullYear() == now.getFullYear()).length
+    (state) => state.events.events?.filter((e) => e.idCategoria === 33 && new Date(e.fecha).getDate() == now.getDate() && new Date(e.fecha).getMonth() == now.getMonth() && new Date(e.fecha).getFullYear() == now.getFullYear()).length
   );
   const lastConsumedBottle = new Date() - new Date(useSelector((state) => state.events.lastBottleConsumed));
   const formatedBottleTime = `${String(Math.floor(lastConsumedBottle / (1000 * 60 * 60))).padStart(2, '0')}:${String(Math.floor((lastConsumedBottle % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0')}:${String(Math.floor((lastConsumedBottle % (1000 * 60)) / 1000)).padStart(2, '0')}`;
